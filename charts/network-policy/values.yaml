@@ -1,3 +1,5 @@
 topology: line
 size: 4
-prefix: "pod"
+labelSelector:
+  key: app
+  valuePrefix: "pod"
