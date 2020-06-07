@@ -1,0 +1,8 @@
+{{ range $i := until (int .Values.size) }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: "{{ $.Values.prefix }}-{{ $i }}"
+spec:
+---
+{{ end }}
