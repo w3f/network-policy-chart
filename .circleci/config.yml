@@ -1,0 +1,54 @@
+version: 2
+
+jobs:
+  helmLint:
+    docker:
+      - image: web3f/ci-commons:v2.1.4
+    steps:
+      - checkout
+      - run:
+          command: |
+            helm lint ./charts/network-policy
+
+  integrationTests:
+    docker:
+      - image: web3f/ci-commons:v2.1.4
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          description: run integration tests
+          command: |
+            /scripts/integration-tests.sh
+
+  publishChart:
+    docker:
+      - image: web3f/ci-commons:v2.1.4
+    steps:
+      - checkout
+      - run:
+          command: |
+            /scripts/publish-chart.sh
+
+workflows:
+  version: 2
+  test_and_deploy:
+    jobs:
+      - helmLint:
+          filters:
+            tags:
+              only: /.*/
+      - integrationTests:
+          filters:
+            tags:
+              only: /.*/
+          requires:
+            - helmLint
+      - publishChart:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*/
+          requires:
+            - integrationTests

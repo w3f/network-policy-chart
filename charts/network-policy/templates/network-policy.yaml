@@ -1,0 +1,54 @@
+{{ if eq .Values.topology "full" }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ $.Values.labelSelector.valuePrefix }}
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - {}
+  egress:
+  - {}
+{{ else }}
+{{ range $i := until (int .Values.size) }}
+{{- $_ := set $ "i" $i }}
+{{- $allowedPods := include "network-policy.allowed-connections" $ }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ $.Values.labelSelector.valuePrefix }}-{{ $i }}
+spec:
+  podSelector:
+    matchLabels:
+      {{ $.Values.labelSelector.key }}: {{ $.Values.labelSelector.valuePrefix }}-{{ $i }}
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: prometheus
+    - podSelector:
+        matchExpressions:
+        - key: {{ $.Values.labelSelector.key }}
+          operator: In
+          values:
+          {{- $allowedPods | indent 10 }}
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: prometheus
+    - podSelector:
+        matchExpressions:
+        - key: {{ $.Values.labelSelector.key }}
+          operator: In
+          values:
+          {{- $allowedPods | indent 10 }}
+---
+{{ end }}
+{{ end }}
