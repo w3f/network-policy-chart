@@ -38,7 +38,7 @@ spec:
           values:
           {{- include "network-policy.allowed-connections" $ | indent 10 }}
   egress:
-  - from:
+  - to:
     - podSelector:
         matchLabels:
           app: prometheus
