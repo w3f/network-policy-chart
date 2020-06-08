@@ -1,4 +1,4 @@
-{{/* Generates allowed pods for pod or order $i */}}
+{{/* Generates allowed pods for pod of order $i */}}
 {{- define "network-policy.allowed-connections" -}}
 {{- if and ( gt .i 0 ) ( lt .i (sub .Values.size 1)) }}
 - {{ .Values.labelSelector.valuePrefix }}-{{ sub .i 1 }}
