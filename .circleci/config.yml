@@ -8,7 +8,7 @@ jobs:
       - checkout
       - run:
           command: |
-            helm lint ./charts/mongo-express
+            helm lint ./charts/network-policy
 
   integrationTests:
     docker:
