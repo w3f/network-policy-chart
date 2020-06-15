@@ -29,9 +29,11 @@ spec:
   - Egress
   ingress:
   - from:
+    {{- range $.Values.allowedLabels }}
     - podSelector:
         matchLabels:
-          app: prometheus
+          {{ .key }}: {{ .value }}
+    {{- end }}
     - podSelector:
         matchExpressions:
         - key: {{ $.Values.labelSelector.key }}
