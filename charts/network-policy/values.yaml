@@ -3,3 +3,8 @@ size: 4
 labelSelector:
   key: app
   valuePrefix: "pod"
+allowedLabels:
+- key: app
+  value: prometheus
+- key: app
+  value: lab-test-case
