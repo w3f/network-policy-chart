@@ -6,5 +6,5 @@ labelSelector:
 allowedLabels:
 - key: app
   value: prometheus
-- key: app
+- key: group
   value: lab-test-case
